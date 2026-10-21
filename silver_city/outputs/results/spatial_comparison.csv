@@ -1,0 +1,9 @@
+﻿budget_wan,algorithm,spent_wan,proxy_score,accessible_chains_out_of_9,coverage_percent,project_ids,source
+3.0,Proxy only,2.8,198.95,2,22.22,"P002,P006,P008",synthetic route graph and project records
+3.0,Proxy + route,2.8,164.35,4,44.44,"P001,P002",synthetic route graph and project records
+5.0,Proxy only,5.0,287.2,2,22.22,"P002,P006,P004,P005",synthetic route graph and project records
+5.0,Proxy + route,4.8,281.85,4,44.44,"P001,P002,P006,P008",synthetic route graph and project records
+10.0,Proxy only,9.7,473.35,4,44.44,"P001,P002,P006,P004,P005,P012,P008",synthetic route graph and project records
+10.0,Proxy + route,9.2,451.6,6,66.67,"P007,P001,P002,P006,P004,P008",synthetic route graph and project records
+15.0,Proxy only,15.0,599.6,6,66.67,"P007,P001,P011,P002,P006,P004,P005,P008",synthetic route graph and project records
+15.0,Proxy + route,14.6,593.6,9,100.0,"P007,P001,P009,P002,P006,P004,P005,P008",synthetic route graph and project records
