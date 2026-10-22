@@ -1,10 +1,10 @@
 import uuid
 from pathlib import Path
 import streamlit as st
-from core.data import ISSUE_TYPES, UPLOADS_DIR, add_problem, load_data
+from core.data import ISSUE_TYPES, add_problem, load_data
 
 st.title("① 社区适老化问题采集")
-st.caption("先人工标注，再做风险评价；照片上传属于证据采集，不代表已实现AI识别。")
+st.caption("公开演示版：新增问题与照片仅保存在当前浏览器会话中，刷新/断线后可能丢失；请及时下载CSV。照片不是AI自动识别结果。")
 
 with st.form("new_problem_form", clear_on_submit=True):
     name = st.text_input("位置名称 *", placeholder="例如：5号楼东入口")
@@ -38,10 +38,8 @@ if submitted:
         if photo is not None:
             suffix = Path(photo.name).suffix.lower()
             suffix = suffix if suffix in {".jpg", ".jpeg", ".png"} else ".jpg"
-            UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
-            file_path = UPLOADS_DIR / f"{uuid.uuid4().hex}{suffix}"
-            file_path.write_bytes(photo.getvalue())
-            path = f"uploads/{file_path.name}"
+            path = f"session/{uuid.uuid4().hex}{suffix}"
+            st.session_state.setdefault("photo_store", {})[path] = photo.getvalue()
         record = {
             "name": name.strip(), "issue_type": issue_type,
             "lat": lat, "lon": lon, "severity": severity,
@@ -61,6 +59,7 @@ st.subheader("问题数据表")
 try:
     df = load_data()
     st.dataframe(df, use_container_width=True, hide_index=True)
+    st.info("本网页不对外保存个人上传内容。当前会话结束后记录可能消失；需要保留时请导出CSV并在本机保存。")
     st.download_button(
         "导出全部问题CSV", df.to_csv(index=False).encode("utf-8-sig"),
         file_name="银龄智城_问题记录.csv", mime="text/csv"

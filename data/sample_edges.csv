@@ -1,0 +1,11 @@
+start,end,length_m,blocked_for,repair_project_id,verified
+h1,a,45,,,False
+h2,b,55,轮椅;助行器,P001,False
+h3,c,60,轮椅;助行器,P009,False
+a,b,115,,,False
+b,c,125,,,False
+a,shop,90,,,False
+b,clinic,75,轮椅;助行器,P007,False
+c,bus,65,,,False
+a,bus,420,,,False
+a,c,315,,,False

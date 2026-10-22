@@ -49,14 +49,28 @@ def seed_rows():
     return rows
 
 
+def _session_records():
+    """Session-only records keep public demo visitors isolated from each other."""
+    try:
+        import streamlit as st
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+        if get_script_run_ctx() is not None:
+            return st.session_state.get("submitted_records", [])
+    except (ImportError, RuntimeError):
+        pass
+    return []
+
+
 def load_data():
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
-    UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
     if not DATA_FILE.exists():
         pd.DataFrame(seed_rows(), columns=COLUMNS).to_csv(
             DATA_FILE, index=False, encoding="utf-8-sig"
         )
     df = pd.read_csv(DATA_FILE, encoding="utf-8-sig", keep_default_na=False)
+    extras = _session_records()
+    if extras:
+        df = pd.concat([df, pd.DataFrame(extras, columns=COLUMNS)], ignore_index=True)
     missing = set(COLUMNS) - set(df.columns)
     if missing:
         raise ValueError("CSV缺少列：" + ", ".join(sorted(missing)))
@@ -71,6 +85,11 @@ def load_data():
 
 
 def add_problem(record):
+    """Only save into the current browser session, not a shared cloud CSV."""
+    import streamlit as st
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
+    if get_script_run_ctx() is None:
+        raise RuntimeError("请在Streamlit网页中添加数据")
     df = load_data()
     existing = set(df["id"].astype(str))
     number = 1
@@ -82,7 +101,5 @@ def add_problem(record):
         record.get("verified", False)
         and record.get("source_type") == "实地调查"
     )
-    next_row = pd.DataFrame([record], columns=COLUMNS)
-    df = pd.concat([df, next_row], ignore_index=True)
-    df.to_csv(DATA_FILE, index=False, encoding="utf-8-sig")
+    st.session_state.setdefault("submitted_records", []).append(record)
     return record["id"]
