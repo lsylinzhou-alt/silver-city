@@ -32,7 +32,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://127.0.0.1:5173"
+        "http://127.0.0.1:5173" ,
+         "https://silver-city-web.onrender.com",
     ],
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"]
